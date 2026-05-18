@@ -1,6 +1,7 @@
 import os
 import streamlit as st
-import google.generativeai as genai
+import requests
+import json
 
 SYSTEM_PROMPT = """
 You are an expert AI career advisor for a specific OPT/STEM OPT international student profile.
@@ -32,20 +33,32 @@ Be honest and concise. If a section is not applicable, say 'Not enough informati
 
 
 def analyze_job_posting(job_posting: str) -> str:
-    api_key = os.environ.get("GEMINI_API_KEY", "")
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     if not api_key:
-        raise ValueError(
-            "Missing G E M I N I _ A P I _ K E Y environment variable."
-        )
+        raise ValueError("Missing OPENROUTER_API_KEY environment variable.")
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        system_instruction=SYSTEM_PROMPT,
-    )
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    body = {
+        "model": "mistralai/mistral-7b-instruct:free",
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": job_posting.strip()},
+        ],
+    }
 
-    response = model.generate_content(job_posting.strip())
-    return response.text
+    resp = requests.post(url, headers=headers, json=body, timeout=60)
+    resp.raise_for_status()
+    data = resp.json()
+
+    # Safely extract the assistant content
+    try:
+        return data["choices"][0]["message"]["content"]
+    except Exception:
+        return json.dumps(data)
 
 
 def main() -> None:
