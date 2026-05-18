@@ -43,7 +43,7 @@ def analyze_job_posting(job_posting: str) -> str:
         "Content-Type": "application/json",
     }
     body = {
-        "model": "mistralai/mistral-7b-instruct:free",
+        "model": "meta-llama/llama-3.2-3b-instruct:free",
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": job_posting.strip()},
