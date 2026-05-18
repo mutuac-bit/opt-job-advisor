@@ -1,7 +1,6 @@
 import os
 import streamlit as st
-import requests
-import json
+import groq
 
 SYSTEM_PROMPT = """
 You are an expert AI career advisor for a specific OPT/STEM OPT international student profile.
@@ -33,32 +32,21 @@ Be honest and concise. If a section is not applicable, say 'Not enough informati
 
 
 def analyze_job_posting(job_posting: str) -> str:
-    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    api_key = os.environ.get("GROQ_API_KEY", "")
     if not api_key:
-        raise ValueError("Missing OPENROUTER_API_KEY environment variable.")
+        raise ValueError("Missing GROQ_API_KEY environment variable.")
 
-    url = "https://openrouter.ai/api/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-    body = {
-        "model": "meta-llama/llama-3.2-3b-instruct:free",
-        "messages": [
+    client = groq.Groq(api_key=api_key)
+    response = client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": job_posting.strip()},
         ],
-    }
+        max_tokens=1024,
+    )
 
-    resp = requests.post(url, headers=headers, json=body, timeout=60)
-    resp.raise_for_status()
-    data = resp.json()
-
-    # Safely extract the assistant content
-    try:
-        return data["choices"][0]["message"]["content"]
-    except Exception:
-        return json.dumps(data)
+    return response.choices[0].message.content
 
 
 def main() -> None:
@@ -74,7 +62,7 @@ def main() -> None:
     )
 
     st.info(
-        "This tool uses a hardcoded profile and does not store your job posting. Set ANTHROPIC_API_KEY in your environment before running."
+        "This tool uses a hardcoded profile and does not store your job posting. Set GROQ_API_KEY in your environment before running."
     )
 
     job_posting = st.text_area(
