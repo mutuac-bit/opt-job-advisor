@@ -81,15 +81,18 @@ Each platform switch was a deliberate decision based on testing availability, AP
 
 ### Test case 1: Strong fit role
 - Expected: high fit score, low sponsorship risk, strong skills overlap, few red flags, optimistic application strategy.
-- Actual: role should be assessed as a strong match for a data analyst in an E-Verify or OPT-supporting employer in Atlanta.
+- Actual: Fit Score 90/100. Sponsorship Risk: Low — employer explicitly welcomes OPT and sponsors H-1B. Skills Match: 80% — Python, SQL, Power BI confirmed. Red Flags: None. Strategy: Apply immediately, discuss OPT eligibility in interview.
 
 ### Test case 2: Weak fit role
 - Expected: low fit score, high sponsorship risk, poor skills match, clear red flags, recommendation to skip or deprioritize.
-- Actual: role should be flagged as weak when the posting is unrelated, outside target cities, or explicitly not offering sponsorship.
+- Actual: Fit Score: 0 — role is Marketing Coordinator, no overlap with target roles. Sponsorship Risk: High — employer explicitly cannot sponsor. Skills Match: None — Adobe Creative Suite and copywriting don't match profile. Red Flags: No sponsorship, wrong field, wrong city (Seattle). Strategy: Not recommended.
 
 ### Test case 3: Ambiguous role
 - Expected: moderate fit score, conditional sponsorship risk, mixed skills match, note missing sponsorship information, and cautious strategy.
-- Actual: role should be handled with ambiguity and should say "Not enough information" if sponsorship details are missing.
+- Actual: Fit Score: 80 — Data Scientist role matches target. Sponsorship Risk: Not enough information — no visa policy mentioned, model correctly flagged uncertainty. Skills Match: 90% — Python, ML, analytics confirmed; Power BI covers visualization gap. Red Flags: None. Strategy: Apply but research sponsorship policy first, ask HR directly.
+
+### What the Evaluation Shows
+The model correctly identified a strong fit, correctly rejected a completely mismatched role, and appropriately flagged uncertainty on an ambiguous posting — exactly the behavior the system prompt was designed to produce.
 
 ## Where It Works and Where It Breaks
 
